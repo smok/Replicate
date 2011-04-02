@@ -1,0 +1,24 @@
+<style>
+	body { font-family: arial, verdana, sans-serif;}
+</style>
+<script>
+	function initialize() {
+		chrome.tabs.getSelected(null, 
+			function(tab) {
+				chrome.extension.sendRequest(
+					{
+						action: "initTab",
+						condition: document.getElementById('condition').value,
+						tabId: tab.id,
+						timeout: document.getElementById('timeout').value
+					});
+			});
+	}
+</script>
+<label for="condition">Condition:</label>
+<textarea style="width:400px; height:200px;" id="condition" name="condition" placeholder="Enter an expression that when true, will product notification.">true</textarea>
+<br/>
+<label for="refreshTimeout">Refresh timeout:</label>
+<input type="text" style="width:100px;" id="timeout" value="3" name="timeout" placeholder="Enter timeout in seconds.">
+<br/>
+<input type="button" onclick="initialize();" value="Start replicating!">

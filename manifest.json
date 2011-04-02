@@ -1,0 +1,18 @@
+{
+  "name": "Replicate!",
+  "version": "0.1",
+  "description": "Refreshes the page until a condition becomes true. The condition can be arbitrary Javascript executed in the page's context.",
+  "background_page": "bg.html",
+  "browser_action": {
+    "default_icon": "icon.png",
+	"popup" : "popup.html"
+  },
+  "content_scripts" : [{
+	"matches" : ["http://*/*"],
+	"js" : ["content.js"]
+  }],
+  "permissions": [
+    "tabs", "http://*/*", "https://*/*",
+	"notifications"
+  ]
+}

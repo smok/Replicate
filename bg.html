@@ -1,0 +1,50 @@
+<script>
+	console.log('Hello!');
+	
+	var condition = "";
+	var tabId = "";
+	var timeout = 5;
+	var timeoutId = null;
+	
+	function showNotification() {
+		var notification = webkitNotifications.createNotification(
+		  'Replicated!',  // notification title
+		  'Condition reached!'  // notification body text
+		);
+
+		notification.show();
+	}
+	
+	chrome.extension.onRequest.addListener(
+		function(request, sender, sendResponse) {
+			if (request.action == "initTab") {
+				tabId = request.tabId;
+				condition = request.condition;
+				timeout = request.timeout;
+			}
+			clearTimeout(timeoutId);
+			setTimeout(evaluateTab, timeout * 1000);
+			sendResponse({});
+		});
+	
+	function evaluateTab() {
+		chrome.tabs.sendRequest(tabId,
+			{
+				action: "eval",
+				condition: condition
+			}, 
+			function(response) {
+		  		if (response.ret) {
+					showNotification();
+					clearTimeout(timeoutId);
+				} else {
+					chrome.tabs.sendRequest(tabId, 
+						{
+							action: "refresh"
+						});
+					setTimeout(evaluateTab, timeout * 1000);
+				}
+			}
+		);
+	}
+</script>
